@@ -2,10 +2,10 @@
   "name": "phaser3-debug",
   "version": "0.1.0",
   "description": "A simple debug scene for Phaser 3.",
-  "main": "src/index.js",
+  "main": "dist/phaser3-debug.min.js",
   "scripts": {
     "build": "webpack --config webpack/prod.js ",
-		"start": "webpack-dev-server --config webpack/base.js"
+		"start": "webpack-dev-server --config webpack/dev.js"
   },
   "repository": {
     "type": "git",
@@ -34,5 +34,5 @@
   },
   "dependencies": {
     "phaser": "^3.16.2"
-  }
+	}
 }

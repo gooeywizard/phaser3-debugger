@@ -1,12 +1,15 @@
 const merge = require("webpack-merge");
-const path = require("path");
-const base = require("./base");
 const TerserPlugin = require("terser-webpack-plugin");
+const path = require("path");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+
+const base = require("./base");
 
 module.exports = merge(base, {
-  mode: "production",
+	mode: "production",
+	entry: './src/scenes/DebugScene.js',
   output: {
-    filename: "bundle.min.js"
+    filename: "phaser3-debug.min.js"
   },
   devtool: false,
   performance: {
@@ -23,5 +26,10 @@ module.exports = merge(base, {
         }
       })
     ]
-  }
+	},
+	plugins: [
+		new CleanWebpackPlugin(["dist"], {
+      root: path.resolve(__dirname, "../")
+    })
+	]
 });
