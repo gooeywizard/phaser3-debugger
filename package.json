@@ -1,6 +1,6 @@
 {
   "name": "phaser3-debug",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple debug scene for Phaser 3.",
   "main": "dist/phaser3-debug.min.js",
   "scripts": {
