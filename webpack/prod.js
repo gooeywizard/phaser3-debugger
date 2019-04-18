@@ -9,7 +9,8 @@ module.exports = merge(base, {
 	mode: "production",
 	entry: './src/scenes/DebugScene.js',
   output: {
-    filename: "phaser3-debug.min.js"
+		filename: "phaser3-debug.min.js",
+		libraryTarget: 'commonjs'
   },
   devtool: false,
   performance: {
