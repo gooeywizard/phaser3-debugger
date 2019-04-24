@@ -6,7 +6,7 @@ class DebugScene extends Phaser.Scene {
 			active: false
 		});
 		
-		this.props = config.props || ['x','y','angle'];
+		this.globalProps = config.props || ['x','y','angle'];
 		this.style = {
 			font: '12px Arial',
 			fill: config.color || '#da4d4d'
@@ -29,7 +29,7 @@ class DebugScene extends Phaser.Scene {
 		for(let i = 0; i < children.length; i++) {
 			let child = children[i];
 			
-			if(!child.debug) {
+			if(!this.isDebuggable(child)) {
 				continue;
 			}
 			
@@ -41,8 +41,10 @@ class DebugScene extends Phaser.Scene {
 				child: child
 			};
 			
-			for(let j = 0; j < this.props.length; j++) {
-				let prop = this.props[j];
+			let props = this.getProps(child);
+			
+			for(let j = 0; j < props.length; j++) {
+				let prop = props[j];
 				obj[prop] = this.add.text(x, y + offset * j, prop + ': ' + child[prop].toFixed(2), this.style);
 			}
 			
@@ -72,13 +74,27 @@ class DebugScene extends Phaser.Scene {
 			let y = child.y + child.height / 2;
 			let offset = 16;
 			
-			for(let j = 0; j < this.props.length; j++) {
-				let prop = this.props[j];
+			let props = this.getProps(child);
+			
+			for(let j = 0; j < props.length; j++) {
+				let prop = props[j];
 				obj[prop].setText(prop + ': ' + child[prop].toFixed(2));
 				obj[prop].x = x;
 				obj[prop].y = y + offset * j;
 			}
 		}
+	}
+	
+	isDebuggable(child) {
+		return child.debug === true || child.debug instanceof Array;
+	}
+	
+	getProps(child) {
+		if(child.debug instanceof Array) {
+			return child.debug;
+		}
+		
+		return this.globalProps;
 	}
 }
 

@@ -32,8 +32,8 @@ class MainScene extends Phaser.Scene {
 		});
 		
 		const logo2 = this.add.image(550, 150, 'logo');
-		// set debug = true for any entities you wish to debug
-		logo2.debug = true;
+		// set debug = object w/ properties you want to debug on that entity only
+		logo2.debug = ['x', 'rotation'];
 
 		this.tweens.add({
 			targets: logo2,
@@ -45,6 +45,10 @@ class MainScene extends Phaser.Scene {
 			yoyo: true,
 			loop: -1
 		});
+		
+		this.debugMsg = [{
+			
+		}];
 		
 		this.game.scene.start('Debug', this);
 		
