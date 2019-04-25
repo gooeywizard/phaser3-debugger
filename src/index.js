@@ -14,7 +14,7 @@ new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'app',
   width: 800,
-  height: 600,
+  height: 800,
   scene: [
 		MainScene,
 		debug
