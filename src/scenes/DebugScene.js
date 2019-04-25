@@ -7,10 +7,15 @@ class DebugScene extends Phaser.Scene {
 		});
 		
 		this.globalProps = config.props || ['x','y','angle'];
+		
+		let color = config.color || '#da4d4d';
 		this.style = {
 			font: '12px Arial',
-			fill: config.color || '#da4d4d'
+			fill: color,
+			stroke: color,
+			strokeThickness: 1
 		};
+		
 		this.pauseKey = config.pauseKey || 'P';
 		
 		this.debugScene = {
@@ -45,7 +50,8 @@ class DebugScene extends Phaser.Scene {
 			
 			for(let j = 0; j < props.length; j++) {
 				let prop = props[j];
-				obj[prop] = this.add.text(x, y + offset * j, prop + ': ' + child[prop].toFixed(2), this.style);
+				let value = this.getValue(child, prop);
+				obj[prop] = this.add.text(x, y + offset * j, prop + ': ' + value, this.style);
 			}
 			
 			this.debug.push(obj);
@@ -78,7 +84,8 @@ class DebugScene extends Phaser.Scene {
 			
 			for(let j = 0; j < props.length; j++) {
 				let prop = props[j];
-				obj[prop].setText(prop + ': ' + child[prop].toFixed(2));
+				let value = this.getValue(child, prop);
+				obj[prop].setText(prop + ': ' + value);
 				obj[prop].x = x;
 				obj[prop].y = y + offset * j;
 			}
@@ -95,6 +102,17 @@ class DebugScene extends Phaser.Scene {
 		}
 		
 		return this.globalProps;
+	}
+	
+	getValue(child, prop) {
+		let value = child[prop];
+		
+		if(Number.isFinite(value)) {
+			// TODO: make this configurable
+			value = value.toFixed(2);
+		}
+		
+		return value;
 	}
 }
 
