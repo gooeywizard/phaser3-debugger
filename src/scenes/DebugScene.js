@@ -63,22 +63,28 @@ class DebugScene extends Phaser.Scene {
 				obj[prop] = this.add.text(x, y + offset * j, prop + ': ' + value, this.style);
 			}
 			
+			if(this.pauseOnCollisions && child.body) {
+				this.addCollisionListener(child.body);
+			}
+			
 			this.debug.push(obj);
 		}
 		
 		this.isPaused = false;
 		
 		this.input.keyboard.on('keydown_' + this.pauseKey, (event) => {
-			let key = this.debugScene.scene.key;
-			
-			if(!this.isPaused) {
-				this.game.scene.pause(key);
-				this.isPaused = true;
-			} else {
-				this.game.scene.resume(key);
-				this.isPaused = false;
-			}
+			this.pauseScene();
 		});
+		
+		if(this.pauseOnCollisions) {
+			Phaser.Physics.Matter.Matter.Events.on(this.debugScene.matter.world.engine, 'collisionStart', function(event) {
+				for(let i = 0; i < event.pairs.length; i++) {
+					let pair = event.pairs[i];
+					Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyA, 'collision', { pair: pair });
+					Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyB, 'collision', { pair: pair });
+				}
+			});
+		}
 	}
 	
 	update() {
@@ -141,6 +147,27 @@ class DebugScene extends Phaser.Scene {
 			// this.debugScene.matter.world.engine.debug = false;
 			
 			// this.debugScene.matter.world.debugGraphic
+		}
+	}
+	
+	pauseScene() {
+		let key = this.debugScene.scene.key;
+			
+		if(!this.isPaused) {
+			this.game.scene.pause(key);
+			this.isPaused = true;
+		} else {
+			this.game.scene.resume(key);
+			this.isPaused = false;
+		}
+	}
+	
+	addCollisionListener(body) {
+		if(this.debugScene.matter) {
+			Phaser.Physics.Matter.Matter.Events.on(body, 'collision', event => {
+				console.log('colliding!');
+				this.pauseScene();
+			});
 		}
 	}
 }
