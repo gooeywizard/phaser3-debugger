@@ -20,7 +20,7 @@ class DebugScene extends Phaser.Scene {
 		
 		this.pauseOnCollisions = config.pauseOnCollisions || false;
 		
-		this.showBodies = true;
+		this.showBodies = config.showBodies || true;
 		
 		this.debugScene = {
 			children: {
@@ -32,11 +32,26 @@ class DebugScene extends Phaser.Scene {
 	}
 	
 	init(scene) {
+		// the scene being debugged
 		this.debugScene = scene;
 		
+		// enable physis debug mode if showBodies == true
 		if(this.showBodies) {
 			this.enablePhysicsDebugging();
 			this.debugScene.events.on('shutdown', this.disablePhysicsDebugging, this);
+		}
+		
+		// add collision listeners if pauseOnCollisions == true
+		if(this.pauseOnCollisions) {
+			if(this.debugScene.matter) {
+				Phaser.Physics.Matter.Matter.Events.on(this.debugScene.matter.world.engine, 'collisionStart', function(event) {
+					for(let i = 0; i < event.pairs.length; i++) {
+						let pair = event.pairs[i];
+						Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyA, 'collision', { pair: pair });
+						Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyB, 'collision', { pair: pair });
+					}
+				});
+			}
 		}
 		
 		let children = this.debugScene.children.list;
@@ -75,16 +90,6 @@ class DebugScene extends Phaser.Scene {
 		this.input.keyboard.on('keydown_' + this.pauseKey, (event) => {
 			this.pauseScene();
 		});
-		
-		if(this.pauseOnCollisions) {
-			Phaser.Physics.Matter.Matter.Events.on(this.debugScene.matter.world.engine, 'collisionStart', function(event) {
-				for(let i = 0; i < event.pairs.length; i++) {
-					let pair = event.pairs[i];
-					Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyA, 'collision', { pair: pair });
-					Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyB, 'collision', { pair: pair });
-				}
-			});
-		}
 	}
 	
 	update() {
