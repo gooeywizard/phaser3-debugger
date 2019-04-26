@@ -7,7 +7,8 @@ import DebugScene from './scenes/DebugScene'
 const debug = new DebugScene({
 	props: ['x','y','angle'],
 	color: '#da4d4d',
-	pauseKey: 'P'
+	pauseKey: 'P',
+	pauseOnCollisions: true
 });
 
 new Phaser.Game({
@@ -18,5 +19,11 @@ new Phaser.Game({
   scene: [
 		MainScene,
 		debug
-	]
+	],
+	physics: {
+		default: 'matter',
+		matter: {
+			debug: false
+		}
+	}
 });

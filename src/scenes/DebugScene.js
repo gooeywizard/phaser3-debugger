@@ -18,6 +18,10 @@ class DebugScene extends Phaser.Scene {
 		
 		this.pauseKey = config.pauseKey || 'P';
 		
+		this.pauseOnCollisions = config.pauseOnCollisions || false;
+		
+		this.showBodies = true;
+		
 		this.debugScene = {
 			children: {
 				list: []
@@ -29,6 +33,11 @@ class DebugScene extends Phaser.Scene {
 	
 	init(scene) {
 		this.debugScene = scene;
+		
+		if(this.showBodies) {
+			this.enablePhysicsDebugging();
+			this.debugScene.events.on('shutdown', this.disablePhysicsDebugging, this);
+		}
 		
 		let children = this.debugScene.children.list;
 		for(let i = 0; i < children.length; i++) {
@@ -113,6 +122,26 @@ class DebugScene extends Phaser.Scene {
 		}
 		
 		return value;
+	}
+	
+	enablePhysicsDebugging() {
+		if(this.debugScene.matter) {
+			// this.debugScene.matter.config.debug = true;
+			this.debugScene.matter.world.drawDebug = true;
+			// this.debugScene.matter.world.engine.debug = true;
+			
+			this.debugScene.matter.world.createDebugGraphic();
+		}
+	}
+	
+	disablePhysicsDebugging() {
+		if(this.debugScene.matter) {
+			// this.debugScene.matter.config.debug = false;
+			this.debugScene.matter.world.drawDebug = false;
+			// this.debugScene.matter.world.engine.debug = false;
+			
+			// this.debugScene.matter.world.debugGraphic
+		}
 	}
 }
 
