@@ -54,6 +54,8 @@ class DebugScene extends Phaser.Scene {
 			}
 		}
 		
+		this.fpsText = this.add.text(20, 20, 'FPS: ' + this.game.loop.actualFps.toFixed(2), this.style);
+		
 		let children = this.debugScene.children.list;
 		for(let i = 0; i < children.length; i++) {
 			let child = children[i];
@@ -93,6 +95,8 @@ class DebugScene extends Phaser.Scene {
 	}
 	
 	update() {
+		this.fpsText.setText('FPS: ' + this.game.loop.actualFps.toFixed(2));
+		
 		for(let i = 0; i < this.debug.length; i++) {
 			let obj = this.debug[i];
 			let child = obj.child;

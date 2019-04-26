@@ -51,7 +51,7 @@ class MainScene extends Phaser.Scene {
 		
 		this.matter.world.setBounds(0,0, this.game.config.width, this.game.config.height);
 		
-		let logo3 = this.matter.add.image(600, 50, 'logo');
+		let logo3 = this.matter.add.image(600, 150, 'logo');
 		logo3.setCircle();
 		logo3.setFriction(0.005);
 		logo3.setBounce(1.25);
