@@ -6,21 +6,40 @@ class DebugScene extends Phaser.Scene {
 			active: false
 		});
 		
-		this.globalProps = config.props || ['x','y','angle'];
+		let defaultConfig = {
+			props: ['x','y','angle'],
+			color: '#da4d4d',
+			pauseKey: 'P',
+			helpKey: 'ESC',
+			pauseOnCollisions: false,
+			pauseOnCollisionsKey: 'C',
+			showBodies: false,
+			showBodiesKey: 'B',
+			showFps: false,
+			showFpsKey: 'F'
+		}
 		
-		let color = config.color || '#da4d4d';
+		config = Object.assign(defaultConfig, config);
+		
+		this.globalProps = config.props;
+		
 		this.style = {
 			font: '12px Arial',
-			fill: color,
-			stroke: color,
+			fill: config.color,
+			stroke: config.color,
 			strokeThickness: 1
 		};
 		
-		this.pauseKey = config.pauseKey || 'P';
+		this.pauseKey = config.pauseKey;
 		
-		this.pauseOnCollisions = config.pauseOnCollisions || false;
+		this.pauseOnCollisions = config.pauseOnCollisions;
+		this.pauseOnCollisionsKey = config.pauseOnCollisionsKey;
 		
-		this.showBodies = config.showBodies || true;
+		this.showBodies = config.showBodies;
+		this.showBodiesKey = config.showBodiesKey;
+		
+		this.showFps = config.showFps;
+		this.showFpsKey = config.showFpsKey;
 		
 		this.debugScene = {
 			children: {
@@ -38,7 +57,6 @@ class DebugScene extends Phaser.Scene {
 		// enable physis debug mode if showBodies == true
 		if(this.showBodies) {
 			this.enablePhysicsDebugging();
-			this.debugScene.events.on('shutdown', this.disablePhysicsDebugging, this);
 		}
 		
 		// add collision listeners if pauseOnCollisions == true
@@ -54,7 +72,9 @@ class DebugScene extends Phaser.Scene {
 			}
 		}
 		
-		this.fpsText = this.add.text(20, 20, 'FPS: ' + this.game.loop.actualFps.toFixed(2), this.style);
+		if(this.showFps) {
+			this.enableShowFps();
+		}
 		
 		let children = this.debugScene.children.list;
 		for(let i = 0; i < children.length; i++) {
@@ -89,13 +109,45 @@ class DebugScene extends Phaser.Scene {
 		
 		this.isPaused = false;
 		
-		this.input.keyboard.on('keydown_' + this.pauseKey, (event) => {
-			this.pauseScene();
+		// setup key event handlers
+		
+		this.input.keyboard.on('keydown_' + this.pauseKey, event => {
+			if(this.isPaused) {
+				this.resumeScene();
+			} else {
+				this.pauseScene();
+			}
+		});
+		
+		this.input.keyboard.on('keydown_' + this.pauseOnCollisionsKey, event => {
+			if(this.pauseOnCollisions) {
+				this.disablePauseOnCollisions();
+			} else {
+				this.enablePauseOnCollisions();
+			}
+		});
+		
+		this.input.keyboard.on('keydown_' + this.showBodiesKey, event => {
+			if(this.showBodies) {
+				this.disableShowBodies();
+			} else {
+				this.enableShowBodies();
+			}
+		});
+		
+		this.input.keyboard.on('keydown_' + this.showFpsKey, event => {
+			if(this.showFps) {
+				this.disableShowFps();
+			} else {
+				this.enableShowFps();
+			}
 		});
 	}
 	
 	update() {
-		this.fpsText.setText('FPS: ' + this.game.loop.actualFps.toFixed(2));
+		if(this.fpsText) {
+			this.fpsText.setText('FPS: ' + this.game.loop.actualFps.toFixed(2));
+		}
 		
 		for(let i = 0; i < this.debug.length; i++) {
 			let obj = this.debug[i];
@@ -146,6 +198,8 @@ class DebugScene extends Phaser.Scene {
 			// this.debugScene.matter.world.engine.debug = true;
 			
 			this.debugScene.matter.world.createDebugGraphic();
+			
+			this.debugScene.events.once('shutdown', this.disablePhysicsDebugging, this);
 		}
 	}
 	
@@ -160,24 +214,74 @@ class DebugScene extends Phaser.Scene {
 	}
 	
 	pauseScene() {
-		let key = this.debugScene.scene.key;
+		this.game.scene.pause(this.debugScene.scene.key);
+		this.isPaused = true;
+	}
+	
+	resumeScene() {
+		this.game.scene.resume(this.debugScene.scene.key);
+		this.isPaused = false;
+	}
+	
+	disablePauseOnCollisions() {
+		this.pauseOnCollisions = false;
+		
+		for(let i = 0; i < this.debug.length; i++) {
+			let body = this.debug[i].child.body;
 			
-		if(!this.isPaused) {
-			this.game.scene.pause(key);
-			this.isPaused = true;
-		} else {
-			this.game.scene.resume(key);
-			this.isPaused = false;
+			if(body) {
+				this.removeCollisionListener(body);
+			}
+		}
+	}
+	
+	enablePauseOnCollisions() {
+		this.pauseOnCollisions = true;
+		
+		for(let i = 0; i < this.debug.length; i++) {
+			let body = this.debug[i].child.body;
+			
+			if(body) {
+				this.addCollisionListener(body);
+			}
 		}
 	}
 	
 	addCollisionListener(body) {
 		if(this.debugScene.matter) {
 			Phaser.Physics.Matter.Matter.Events.on(body, 'collision', event => {
-				console.log('colliding!');
 				this.pauseScene();
 			});
 		}
+	}
+	
+	removeCollisionListener(body) {
+		if(this.debugScene.matter) {
+			Phaser.Physics.Matter.Matter.Events.off(body, 'collision');
+		}
+	}
+	
+	disableShowBodies() {
+		this.showBodies = false;
+		
+		this.disablePhysicsDebugging();
+	}
+	
+	enableShowBodies() {
+		this.showBodies = true;
+		
+		this.enablePhysicsDebugging();
+	}
+	
+	disableShowFps() {
+		this.showFps = false;
+		this.fpsText.destroy();
+		this.fpsText = null;
+	}
+	
+	enableShowFps() {
+		this.showFps = true;
+		this.fpsText = this.add.text(20, 20, 'FPS: ' + this.game.loop.actualFps.toFixed(2), this.style);
 	}
 }
 
