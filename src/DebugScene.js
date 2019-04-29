@@ -54,6 +54,19 @@ class DebugScene extends Phaser.Scene {
 		// the scene being debugged
 		this.debugScene = scene;
 		
+		// this.stepDelay = 100;
+		this.stepDelay = null;
+		if(this.stepDelay) {
+			this.game.events.on('prestep', (time, delta) => {
+				let start = new Date().getTime();
+				for(let i = 0; i < 1e7; i++) {
+					if((new Date().getTime() - start) > this.stepDelay) {
+						break;
+					}
+				}
+			});
+		}
+		
 		// enable physis debug mode if showBodies == true
 		if(this.showBodies) {
 			this.enablePhysicsDebugging();

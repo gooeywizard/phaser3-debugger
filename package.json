@@ -1,23 +1,23 @@
 {
-  "name": "phaser3-debug",
+  "name": "phaser3-debugger",
   "version": "0.1.2",
   "description": "A simple debug scene for Phaser 3.",
-  "main": "dist/phaser3-debug.min.js",
+  "main": "dist/phaser3-debugger.min.js",
   "scripts": {
     "dev": "webpack-dev-server --config webpack/dev.js",
     "build": "webpack --config webpack/prod.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gooeywizard/phaser3-debug.git"
+    "url": "git+https://github.com/gooeywizard/phaser3-debugger.git"
   },
   "author": "GooeyWizard <thegooeywizard@gmail.com> (https://gooeywizard.com)",
   "license": "MIT",
   "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
   "bugs": {
-    "url": "https://github.com/gooeywizard/phaser3-debug/issues"
+    "url": "https://github.com/gooeywizard/phaser3-debugger/issues"
   },
-  "homepage": "https://github.com/gooeywizard/phaser3-debug#readme",
+  "homepage": "https://github.com/gooeywizard/phaser3-debugger#readme",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
