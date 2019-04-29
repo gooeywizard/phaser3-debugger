@@ -4,7 +4,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const base = require("./base");
 
 module.exports = merge(base, {
-  mode: "development",
+	mode: "development",
+	
+	entry: './demo/src/index.js',
+	
 	devtool: "eval-source-map",
 	plugins: [
     new HtmlWebpackPlugin({

@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 import MainScene from './scenes/MainScene'
-import DebugScene from './scenes/DebugScene'
+import DebugScene from '../../src/DebugScene'
 
 // default config values shown below
 const debug = new DebugScene({

@@ -7,7 +7,7 @@ const base = require("./base");
 
 module.exports = merge(base, {
 	mode: "production",
-	entry: './src/scenes/DebugScene.js',
+	entry: './src/DebugScene.js',
   output: {
 		filename: "phaser3-debug.min.js",
 		library: 'phaser3Debug',

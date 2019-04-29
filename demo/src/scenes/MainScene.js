@@ -9,8 +9,7 @@ class MainScene extends Phaser.Scene {
 	}
 	
 	preload() {
-		console.log('running init');
-		this.load.image('logo', 'assets/gw_logo.png');
+		this.load.image('logo', 'demo/assets/gw_logo.png');
 	}
 	
 	create() {
