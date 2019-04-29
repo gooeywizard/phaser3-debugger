@@ -1,14 +1,16 @@
 # Phaser 3 Debugger
-A simple debug scene that makes it easy to 1) pause at any time and 2) see current stats on any or all sprites and bodies.
+A debug scene that aids in debugging any other scene.
 
-NOTE: There is currently no build version. If you want to use this in your own project, either copy the DebugScene.js file, or wait until I create a nice build you can import.
+## Features
+| Description | % Complete |
+|-------------|------------|
+| Display user-configurable properties of any entities in the scene. | 90% |
+| Pause button. | 100% |
+| Auto-pause when two physics bodies collide. | 33% |
+| Show physics bodies. | 33% |
 
-## Run the Demo
-1) Clone this repository.
-2) `npm install`
-3) `npm start`
-
-While it is running, press 'P' to pause/unpause.
+## Install
+`npm install phaser3-debugger`
 
 ## Configure the Debug Scene
 To enable debug for an entity, set `debug = true` on the entity.
@@ -20,4 +22,13 @@ When creating the debug scene, you can pass in a config object. The table below 
 |----------|-------------|---------|
 | `props` | An array of the propertys to display. | `['x','y','angle']` |
 | `color` | The color of the debug text. | `'#da4d4d'` |
-| `pauseKey` | The key to map to pause/unpause. | `'P'` |
+| `pauseKey` | Hotkey to pause/unpause. | `'P'` |
+| `pauseOnCollisions` | Enable to pause when bodies collide. | `false` |
+| `pauseOnCollisionsKey` | Hotkey for toggling pause-on-collisions on/off. | `'C'` |
+| `showBodies` | Enable debug mode for the physics engine. | `false` |
+| `showBodiesKey` | Hotkey for toggling show-bodies on/off. | `'B'` |
+
+## Run the Demo
+1) Clone this repository.
+2) `npm install`
+3) `npm run dev`
