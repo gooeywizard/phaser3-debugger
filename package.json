@@ -5,7 +5,8 @@
   "main": "dist/phaser3-debugger.min.js",
   "scripts": {
     "dev": "webpack-dev-server --config webpack/dev.js",
-    "build": "webpack --config webpack/prod.js"
+		"build": "webpack --config webpack/prod.js",
+		"demo-build": "webpack-dev-server --config webpack/prod-demo.js"
   },
   "repository": {
     "type": "git",
