@@ -2,12 +2,12 @@
 A debug scene that aids in debugging any other scene.
 
 ## Features
-| Description | % Complete |
-|-------------|------------|
-| Display user-configurable properties of any entities in the scene. | 90% |
-| Pause button. | 100% |
-| Auto-pause when two physics bodies collide. | 33% |
-| Show physics bodies. | 33% |
+| Description | % Complete | Notes |
+|-------------|------------|-------|
+| Display user-configurable properties of any entities in the scene. | 90% | Doesn't handle nested properties (eg: 'prop.nested.inner') |
+| Pause button. | 100% |  |
+| Auto-pause when two physics bodies collide. | 33% | Only works for MatterJS |
+| Show physics bodies. | 33% | Only works for MatterJS |
 
 ## Install
 `npm install phaser3-debugger`
@@ -31,4 +31,4 @@ When creating the debug scene, you can pass in a config object. The table below 
 ## Run the Demo
 1) Clone this repository.
 2) `npm install`
-3) `npm run dev`
+3) `npm run demo-build`
