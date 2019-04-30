@@ -9,6 +9,9 @@ A debug scene that aids in debugging any other scene.
 | Auto-pause when two physics bodies collide. | 33% | Only works for MatterJS |
 | Show physics bodies. | 33% | Only works for MatterJS |
 
+## Plans for Next Major Release
+[v0.3.0](https://github.com/gooeywizard/phaser3-debugger/issues?q=is%3Aopen+is%3Aissue+milestone%3Av0.3.0)
+
 ## Install
 `npm install phaser3-debugger`
 
