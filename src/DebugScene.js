@@ -74,15 +74,7 @@ class DebugScene extends Phaser.Scene {
 		
 		// add collision listeners if pauseOnCollisions == true
 		if(this.pauseOnCollisions) {
-			if(this.debugScene.matter) {
-				Phaser.Physics.Matter.Matter.Events.on(this.debugScene.matter.world.engine, 'collisionStart', function(event) {
-					for(let i = 0; i < event.pairs.length; i++) {
-						let pair = event.pairs[i];
-						Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyA, 'collision', { pair: pair });
-						Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyB, 'collision', { pair: pair });
-					}
-				});
-			}
+			this.enablePauseOnCollisions();
 		}
 		
 		if(this.showFps) {
@@ -133,6 +125,7 @@ class DebugScene extends Phaser.Scene {
 		});
 		
 		this.input.keyboard.on('keydown_' + this.pauseOnCollisionsKey, event => {
+			console.log('pause on collide');
 			if(this.pauseOnCollisions) {
 				this.disablePauseOnCollisions();
 			} else {
@@ -239,6 +232,10 @@ class DebugScene extends Phaser.Scene {
 	disablePauseOnCollisions() {
 		this.pauseOnCollisions = false;
 		
+		if(this.debugScene.matter) {
+			Phaser.Physics.Matter.Matter.Events.off(this.debugScene.matter.world.engine, 'collisionStart');
+		}
+		
 		for(let i = 0; i < this.debug.length; i++) {
 			let body = this.debug[i].child.body;
 			
@@ -250,6 +247,16 @@ class DebugScene extends Phaser.Scene {
 	
 	enablePauseOnCollisions() {
 		this.pauseOnCollisions = true;
+		
+		if(this.debugScene.matter) {
+			Phaser.Physics.Matter.Matter.Events.on(this.debugScene.matter.world.engine, 'collisionStart', function(event) {
+				for(let i = 0; i < event.pairs.length; i++) {
+					let pair = event.pairs[i];
+					Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyA, 'collision', { pair: pair });
+					Phaser.Physics.Matter.Matter.Events.trigger(pair.bodyB, 'collision', { pair: pair });
+				}
+			});
+		}
 		
 		for(let i = 0; i < this.debug.length; i++) {
 			let body = this.debug[i].child.body;
