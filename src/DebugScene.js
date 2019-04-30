@@ -199,10 +199,6 @@ class DebugScene extends Phaser.Scene {
 	
 	enablePhysicsDebugging() {
 		if(this.debugScene.matter) {
-			// this.debugScene.matter.config.debug = true;
-			this.debugScene.matter.world.drawDebug = true;
-			// this.debugScene.matter.world.engine.debug = true;
-			
 			this.debugScene.matter.world.createDebugGraphic();
 			
 			this.debugScene.events.once('shutdown', this.disablePhysicsDebugging, this);
@@ -211,11 +207,10 @@ class DebugScene extends Phaser.Scene {
 	
 	disablePhysicsDebugging() {
 		if(this.debugScene.matter) {
-			// this.debugScene.matter.config.debug = false;
 			this.debugScene.matter.world.drawDebug = false;
-			// this.debugScene.matter.world.engine.debug = false;
 			
-			// this.debugScene.matter.world.debugGraphic
+			this.debugScene.matter.world.debugGraphic.destroy();
+			this.debugScene.matter.world.debugGraphic = undefined;
 		}
 	}
 	
