@@ -30,6 +30,9 @@ When creating the debug scene, you can pass in a config object. The table below 
 | `pauseOnCollisionsKey` | Hotkey for toggling pause-on-collisions on/off. | `'C'` |
 | `showBodies` | Enable debug mode for the physics engine. | `false` |
 | `showBodiesKey` | Hotkey for toggling show-bodies on/off. | `'B'` |
+| `slowDownGameKey` | Hotkey for slowing down the game loop iterations. | `'['` |
+| `speedUpGameKey` | Hotkey for speeding up the game loop iterations (max normal speed). | `']'` |
+| `resetGameSpeedKey` | Hotkey to resume normal game speed. | `'\'` |
 
 ## Run the Demo
 1) Clone this repository.

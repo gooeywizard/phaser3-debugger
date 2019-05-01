@@ -15,8 +15,11 @@ class DebugScene extends Phaser.Scene {
 			pauseOnCollisionsKey: 'C',
 			showBodies: false,
 			showBodiesKey: 'B',
-			showFps: false,
-			showFpsKey: 'F'
+			// showFps: false,
+			// showFpsKey: 'F',
+			slowDownGameKey: 'OPEN_BRACKET',
+			speedUpGameKey: 'CLOSED_BRACKET',
+			resetGameSpeedKey: 'BACK_SLASH'
 		}
 		
 		config = Object.assign(defaultConfig, config);
@@ -38,8 +41,13 @@ class DebugScene extends Phaser.Scene {
 		this.showBodies = config.showBodies;
 		this.showBodiesKey = config.showBodiesKey;
 		
-		this.showFps = config.showFps;
-		this.showFpsKey = config.showFpsKey;
+		// this.showFps = config.showFps;
+		// this.showFpsKey = config.showFpsKey;
+		
+		this.slowDownGameKey = config.slowDownGameKey;
+		this.speedUpGameKey = config.speedUpGameKey;
+		this.resetGameSpeedKey = config.resetGameSpeedKey;
+		this.gameDelay = 0;
 		
 		this.debugScene = {
 			children: {
@@ -54,18 +62,14 @@ class DebugScene extends Phaser.Scene {
 		// the scene being debugged
 		this.debugScene = scene;
 		
-		// this.stepDelay = 100;
-		this.stepDelay = null;
-		if(this.stepDelay) {
-			this.game.events.on('prestep', (time, delta) => {
-				let start = new Date().getTime();
-				for(let i = 0; i < 1e7; i++) {
-					if((new Date().getTime() - start) > this.stepDelay) {
-						break;
-					}
+		this.game.events.on('prestep', (time, delta) => {
+			let start = new Date().getTime();
+			for(let i = 0; i < 1e7; i++) {
+				if((new Date().getTime() - start) > this.gameDelay) {
+					break;
 				}
-			});
-		}
+			}
+		});
 		
 		// enable physis debug mode if showBodies == true
 		if(this.showBodies) {
@@ -77,9 +81,9 @@ class DebugScene extends Phaser.Scene {
 			this.enablePauseOnCollisions();
 		}
 		
-		if(this.showFps) {
-			this.enableShowFps();
-		}
+		// if(this.showFps) {
+		// 	this.enableShowFps();
+		// }
 		
 		let children = this.debugScene.children.list;
 		for(let i = 0; i < children.length; i++) {
@@ -112,6 +116,8 @@ class DebugScene extends Phaser.Scene {
 			this.debug.push(obj);
 		}
 		
+		this.gameDelayText = this.add.text(20, 20, 'Game Delay: ' + (this.gameDelay/1000) + 's', this.style);
+		
 		this.isPaused = false;
 		
 		// setup key event handlers
@@ -125,7 +131,6 @@ class DebugScene extends Phaser.Scene {
 		});
 		
 		this.input.keyboard.on('keydown_' + this.pauseOnCollisionsKey, event => {
-			console.log('pause on collide');
 			if(this.pauseOnCollisions) {
 				this.disablePauseOnCollisions();
 			} else {
@@ -141,18 +146,36 @@ class DebugScene extends Phaser.Scene {
 			}
 		});
 		
-		this.input.keyboard.on('keydown_' + this.showFpsKey, event => {
-			if(this.showFps) {
-				this.disableShowFps();
-			} else {
-				this.enableShowFps();
-			}
+		// this.input.keyboard.on('keydown_' + this.showFpsKey, event => {
+		// 	if(this.showFps) {
+		// 		this.disableShowFps();
+		// 	} else {
+		// 		this.enableShowFps();
+		// 	}
+		// });
+		
+		this.input.keyboard.on('keydown_' + this.slowDownGameKey, event => {
+			this.slowDownGame();
+		});
+		
+		this.input.keyboard.on('keydown_' + this.speedUpGameKey, event => {
+			this.speedUpGame();
+		});
+		
+		this.input.keyboard.on('keydown_' + this.resetGameSpeedKey, event => {
+			this.resetGameSpeed();
 		});
 	}
 	
 	update() {
-		if(this.fpsText) {
-			this.fpsText.setText('FPS: ' + this.game.loop.actualFps.toFixed(2));
+		// if(this.fpsText) {
+		// 	this.fpsText.setText('FPS: ' + this.game.loop.actualFps.toFixed(2));
+		// }
+		
+		if(this.gameDelay > 0) {
+			this.gameDelayText.setText('Game Delay: ' + (this.gameDelay/1000) + 's');
+		} else {
+			this.gameDelayText.setText('');
 		}
 		
 		for(let i = 0; i < this.debug.length; i++) {
@@ -288,15 +311,31 @@ class DebugScene extends Phaser.Scene {
 		this.enablePhysicsDebugging();
 	}
 	
-	disableShowFps() {
-		this.showFps = false;
-		this.fpsText.destroy();
-		this.fpsText = null;
+	// disableShowFps() {
+	// 	this.showFps = false;
+	// 	this.fpsText.destroy();
+	// 	this.fpsText = null;
+	// }
+	
+	// enableShowFps() {
+	// 	this.showFps = true;
+	// 	this.fpsText = this.add.text(20, 20, 'FPS: ' + this.game.loop.actualFps.toFixed(2), this.style);
+	// }
+	
+	slowDownGame() {
+		this.gameDelay += 10;
 	}
 	
-	enableShowFps() {
-		this.showFps = true;
-		this.fpsText = this.add.text(20, 20, 'FPS: ' + this.game.loop.actualFps.toFixed(2), this.style);
+	speedUpGame() {
+		this.gameDelay -= 10;
+		
+		if(this.gameDelay < 0) {
+			this.gameDelay = 0;
+		}
+	}
+	
+	resetGameSpeed() {
+		this.gameDelay = 0;
 	}
 }
 
