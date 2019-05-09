@@ -269,6 +269,12 @@ class DebugScene extends Phaser.Scene {
 				}
 				
 				let text = obj.text[prop];
+				// let propName = prop;
+				// if(!obj.hasPosition) {
+				// 	propName = obj.entity + '.' + prop;
+				// }
+				
+				console.log(obj.entity + '');
 				text.setText(prop + ': ' + value);
 				text.x = x;
 				text.y = y + offset * localJ;

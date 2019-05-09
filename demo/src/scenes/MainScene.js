@@ -58,6 +58,12 @@ class MainScene extends Phaser.Scene {
 		
 		this.testProp = 'testing!';
 		
+		this.randomObj = {
+			prop1: 'prop1',
+			prop2: 'prop2',
+			debug: ['prop1']
+		}
+		
 		this.debug = [
 			'testProp',
 			'children'
