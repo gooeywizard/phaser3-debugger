@@ -219,33 +219,6 @@ class DebugScene extends Phaser.Scene {
 			this.gameDelayText.setText('');
 		}
 		
-		// if(this.isDebuggable(this.debugScene)) {
-		// 	let sceneProps = this.debugScene.debug;
-		// 	for(let i = 0; i < sceneProps.length; i++) {
-		// 		let prop = sceneProps[i];
-		// 		let value = this.getValue(this.debugScene, prop);
-		// 		this.sceneDebug[prop].setText(prop + ': ' + value);
-		// 	}
-		// }
-		
-		// for(let i = 0; i < this.debug.length; i++) {
-		// 	let obj = this.debug[i];
-		// 	let entity = obj.entity;
-		// 	let x = child.x - child.width / 2;
-		// 	let y = child.y + child.height / 2;
-		// 	let offset = 16;
-			
-		// 	let props = this.getProps(child);
-			
-		// 	for(let j = 0; j < props.length; j++) {
-		// 		let prop = props[j];
-		// 		let value = this.getValue(child, prop);
-		// 		obj[prop].setText(prop + ': ' + value);
-		// 		obj[prop].x = x;
-		// 		obj[prop].y = y + offset * j;
-		// 	}
-		// }
-		
 		let offset = 16;
 		let globalX = 20;
 		let globalY = 20 + offset;
@@ -269,10 +242,6 @@ class DebugScene extends Phaser.Scene {
 				}
 				
 				let text = obj.text[prop];
-				// let propName = prop;
-				// if(!obj.hasPosition) {
-				// 	propName = obj.entity + '.' + prop;
-				// }
 				
 				console.log(obj.entity + '');
 				text.setText(prop + ': ' + value);
