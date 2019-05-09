@@ -85,36 +85,77 @@ class DebugScene extends Phaser.Scene {
 		// 	this.enableShowFps();
 		// }
 		
+		if(this.isDebuggable(this.debugScene)) {
+			this.debug.push({
+				entity: this.debugScene,
+				hasPosition: false
+			});
+		}
+		
+		console.log('adding props from debug scene');
+		
+		for(let prop in this.debugScene) {
+			if(this.debugScene.hasOwnProperty(prop)) {
+				let entity = this.debugScene[prop];
+				if(this.isDebuggable(entity)) {
+					this.debug.push({
+						entity: entity,
+						hasPosition: this.getX(entity) !== null
+					});
+				}
+			}
+		}
+		
+		console.log('adding from children');
+		
 		let children = this.debugScene.children.list;
 		for(let i = 0; i < children.length; i++) {
 			let child = children[i];
 			
-			if(!this.isDebuggable(child)) {
-				continue;
+			if(this.isDebuggable(child)) {
+				this.debug.push({
+					entity: child,
+					hasPosition: this.getX(child) !== null
+				});
 			}
-			
-			let x = child.x - child.width;
-			let y = child.y + child.height * 2;
-			let offset = 16;
-			
-			let obj = {
-				child: child
-			};
-			
-			let props = this.getProps(child);
-			
-			for(let j = 0; j < props.length; j++) {
-				let prop = props[j];
-				let value = this.getValue(child, prop);
-				obj[prop] = this.add.text(x, y + offset * j, prop + ': ' + value, this.style);
-			}
-			
-			if(this.pauseOnCollisions && child.body) {
-				this.addCollisionListener(child.body);
-			}
-			
-			this.debug.push(obj);
 		}
+		
+		console.log('done adding ', this.debug[0]);
+		
+		// create debug text for debugged entities
+		let offset = 16;
+		let globalX = 20;
+		let globalY = 20;
+		
+		for(let i = 0; i < this.debug.length; i++) {
+			let obj = this.debug[i];
+			console.log('getting props');
+			obj.props = this.getProps(obj.entity);
+			obj.text = {};
+			
+			let x = this.getX(obj.entity);
+			let y = this.getY(obj.entity);
+			console.log('x,y ', x, y);
+			
+			for(let j = 0; j < obj.props.length; j++) {
+				let prop = obj.props[j];
+				let value = this.getValue(obj.entity, prop);
+				if(x === null) {
+					x = globalX;
+					globalY += offset;
+					y = globalY;
+				}
+				obj.text[prop] = this.add.text(x, y + offset * j, prop + ': ' + value, this.style);
+			}
+			
+			console.log('after loop');
+			
+			if(this.pauseOnCollisions && obj.entity.body) {
+				this.addCollisionListener(obj.entity.body);
+			}
+		}
+		
+		console.log('finished making text');
 		
 		this.gameDelayText = this.add.text(20, 20, 'Game Delay: ' + (this.gameDelay/1000) + 's', this.style);
 		
@@ -178,21 +219,59 @@ class DebugScene extends Phaser.Scene {
 			this.gameDelayText.setText('');
 		}
 		
+		// if(this.isDebuggable(this.debugScene)) {
+		// 	let sceneProps = this.debugScene.debug;
+		// 	for(let i = 0; i < sceneProps.length; i++) {
+		// 		let prop = sceneProps[i];
+		// 		let value = this.getValue(this.debugScene, prop);
+		// 		this.sceneDebug[prop].setText(prop + ': ' + value);
+		// 	}
+		// }
+		
+		// for(let i = 0; i < this.debug.length; i++) {
+		// 	let obj = this.debug[i];
+		// 	let entity = obj.entity;
+		// 	let x = child.x - child.width / 2;
+		// 	let y = child.y + child.height / 2;
+		// 	let offset = 16;
+			
+		// 	let props = this.getProps(child);
+			
+		// 	for(let j = 0; j < props.length; j++) {
+		// 		let prop = props[j];
+		// 		let value = this.getValue(child, prop);
+		// 		obj[prop].setText(prop + ': ' + value);
+		// 		obj[prop].x = x;
+		// 		obj[prop].y = y + offset * j;
+		// 	}
+		// }
+		
+		let offset = 16;
+		let globalX = 20;
+		let globalY = 20 + offset;
+		let globalJ = 0;
+		
 		for(let i = 0; i < this.debug.length; i++) {
 			let obj = this.debug[i];
-			let child = obj.child;
-			let x = child.x - child.width / 2;
-			let y = child.y + child.height / 2;
-			let offset = 16;
 			
-			let props = this.getProps(child);
+			let x = this.getX(obj.entity);
+			let y = this.getY(obj.entity);
 			
-			for(let j = 0; j < props.length; j++) {
-				let prop = props[j];
-				let value = this.getValue(child, prop);
-				obj[prop].setText(prop + ': ' + value);
-				obj[prop].x = x;
-				obj[prop].y = y + offset * j;
+			for(let j = 0; j < obj.props.length; j++) {
+				let prop = obj.props[j];
+				let value = this.getValue(obj.entity, prop);
+				let localJ = j;
+				if(!obj.hasPosition) {
+					x = globalX;
+					y = globalY;
+					localJ = globalJ;
+					globalJ++;
+				}
+				
+				let text = obj.text[prop];
+				text.setText(prop + ': ' + value);
+				text.x = x;
+				text.y = y + offset * localJ;
 			}
 		}
 	}
@@ -218,6 +297,38 @@ class DebugScene extends Phaser.Scene {
 		}
 		
 		return value;
+	}
+	
+	getX(entity) {
+		
+		if(Number.isFinite(entity.x)) {
+			return entity.x - entity.width / 2;
+			
+		} else if(entity.sprite && Number.isFinite(entity.sprite.x)) {
+			return entity.sprite.x - entity.sprite.width / 2;
+			
+		} else if(entity.body && Number.isFinite(entity.body.position.x)) {
+			// is this only true in MatterJS?
+			return entity.body.position.x - entity.body.width / 2;
+		}
+		
+		return null;
+	}
+	
+	getY(entity) {
+		
+		if(Number.isFinite(entity.y)) {
+			return entity.y + entity.height / 2;
+			
+		} else if(entity.sprite && Number.isFinite(entity.sprite.y)) {
+			return entity.sprite.y + entity.sprite.height / 2;
+			
+		} else if(entity.body && Number.isFinite(entity.body.position.y)) {
+			// is this only true in MatterJS?
+			return entity.body.position.y + entity.body.height / 2;
+		}
+		
+		return null;
 	}
 	
 	enablePhysicsDebugging() {

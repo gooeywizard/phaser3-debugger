@@ -56,9 +56,12 @@ class MainScene extends Phaser.Scene {
 		logo3.setBounce(1.25);
 		logo3.debug = true;
 		
-		this.debugMsg = [{
-			
-		}];
+		this.testProp = 'testing!';
+		
+		this.debug = [
+			'testProp',
+			'children'
+		];
 		
 		this.game.scene.start('Debug', this);
 		
