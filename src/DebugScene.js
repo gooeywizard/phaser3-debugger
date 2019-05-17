@@ -243,7 +243,12 @@ class DebugScene extends Phaser.Scene {
 	}
 	
 	getValue(entity, prop) {
-		let value = entity[prop];
+		let propParts = prop.split('.');
+		
+		let value = entity;
+		for(let i = 0; i < propParts.length; i++) {
+			value = value[propParts[i]];
+		}
 		
 		if(Number.isFinite(value)) {
 			// TODO: make this configurable

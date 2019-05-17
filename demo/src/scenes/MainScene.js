@@ -60,8 +60,11 @@ class MainScene extends Phaser.Scene {
 		
 		this.randomObj = {
 			prop1: 'prop1',
+			nested: {
+				prop: 'exammple'
+			},
 			prop2: 'prop2',
-			debug: ['prop1']
+			debug: ['prop1','nested.prop']
 		}
 		
 		this.debug = [
