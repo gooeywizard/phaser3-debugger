@@ -242,8 +242,8 @@ class DebugScene extends Phaser.Scene {
 		return this.globalProps;
 	}
 	
-	getValue(child, prop) {
-		let value = child[prop];
+	getValue(entity, prop) {
+		let value = entity[prop];
 		
 		if(Number.isFinite(value)) {
 			// TODO: make this configurable
