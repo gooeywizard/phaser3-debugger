@@ -1,4 +1,4 @@
-import MainScene from './scenes/MainScene'
+import MainScene from './scenes/MainScene.js'
 import DebugScene from '../../dist/phaser3-debugger.min.js'
 
 // default config values shown below
