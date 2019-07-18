@@ -1,5 +1,3 @@
-import Phaser from 'phaser'
-
 import MainScene from './scenes/MainScene'
 import DebugScene from '../../dist/phaser3-debugger.min.js'
 
