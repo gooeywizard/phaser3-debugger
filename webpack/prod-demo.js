@@ -1,17 +1,49 @@
 const merge = require("webpack-merge");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const path = require("path");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const base = require("./base");
 
 module.exports = merge(base, {
-	mode: "development",
-	
-	entry: './demo/src/demo-build.js',
-	
-	devtool: "eval-source-map",
-	plugins: [
-    new HtmlWebpackPlugin({
-      template: "./index.html"
-		})
-	]
+	mode: "production",
+	entry: './demo/src/index.js',
+  output: {
+		filename: "phaser3-debugger-demo.min.js"
+	},
+	module: {
+		rules: [
+			{
+				test: /\.(png|jp(e*)g|svg)$/,
+				use: [{
+					loader: 'url-loader',
+					options: {
+						// limit: 8000,
+						// name: 'images/[hash]-name.[ext]'
+					}
+				}]
+			}
+		]
+	}
+  // devtool: false,
+  // performance: {
+  //   maxEntrypointSize: 900000,
+  //   maxAssetSize: 900000
+  // },
+  // optimization: {
+  //   minimizer: [
+  //     new TerserPlugin({
+  //       terserOptions: {
+  //         output: {
+  //           comments: false
+  //         }
+  //       }
+  //     })
+  //   ]
+	// },
+	// plugins: [
+	// 	new CleanWebpackPlugin(["dist"], {
+  //     root: path.resolve(__dirname, "../")
+  //   })
+	// ]
 });
