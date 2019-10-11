@@ -26,6 +26,8 @@ class DebugScene extends Phaser.Scene {
 			slowDownGameKey: 'OPEN_BRACKET',
 			speedUpGameKey: 'CLOSED_BRACKET',
 			resetGameSpeedKey: 'BACK_SLASH',
+			showCornerCoords: false,
+			showDirectionAngles: false,
 			helpMenuKey: 'ESC'
 		}
 		
@@ -53,6 +55,9 @@ class DebugScene extends Phaser.Scene {
 		this.pauseOnCollisions = config.pauseOnCollisions;
 		
 		this.showBodies = config.showBodies;
+
+		this.showCornerCoords = config.showCornerCoords;
+		this.showDirectionAngles = config.showDirectionAngles;
 		
 		this.gameDelay = 0;
 		
@@ -80,7 +85,13 @@ class DebugScene extends Phaser.Scene {
 		
 		this.initMenu();
 		
-		this.initGuidelines();
+		if(this.showCornerCoords) {
+			this.initCornerCoords();
+		}
+
+		if(this.showDirectionAngles) {
+			this.initDirectionAngles();
+		}
 		
 		// enable physics debug mode if showBodies == true
 		if(this.showBodies) {
@@ -475,15 +486,14 @@ class DebugScene extends Phaser.Scene {
 		}
 	}
 	
-	initGuidelines() {
+	initCornerCoords() {
 		let camera = this.cameras.main;
 		
 		let inset = 5;
 		
 		this.cornerCoords = [];
-		this.directions = [];
 		
-		let x, y, angle, text;
+		let x, y, text;
 		
 		x = camera.x;
 		y = camera.y;
@@ -507,7 +517,17 @@ class DebugScene extends Phaser.Scene {
 		text = this.add.text(x + inset, y - inset, formatCoord(x, y), this.style);
 		text.setOrigin(0,1);
 		this.cornerCoords.push(text);
+	}
+	
+	initDirectionAngles() {
+		let camera = this.cameras.main;
 		
+		let inset = 5;
+		
+		this.directions = [];
+		
+		let x, y, angle, text;
+
 		angle = 0 + camera.rotation;
 		x = camera.x + camera.width - inset;
 		y = camera.y + camera.height / 2;
