@@ -1,3 +1,12 @@
+const formatCoord = function(x, y) {
+	return '(' + x + ',' + y + ')';
+};
+
+const formatAngle = function(angle) {
+	let angleDeg = angle * 180 / Math.PI;
+	return angleDeg + ' (' + angle.toFixed(2) + ')';
+};
+
 class DebugScene extends Phaser.Scene {
 	
 	constructor(config={}) {
@@ -71,7 +80,9 @@ class DebugScene extends Phaser.Scene {
 		
 		this.initMenu();
 		
-		// enable physis debug mode if showBodies == true
+		this.initGuidelines();
+		
+		// enable physics debug mode if showBodies == true
 		if(this.showBodies) {
 			this.enablePhysicsDebugging();
 		}
@@ -462,6 +473,68 @@ class DebugScene extends Phaser.Scene {
 				this.helpText[i].visible = true;
 			}
 		}
+	}
+	
+	initGuidelines() {
+		let camera = this.cameras.main;
+		
+		let inset = 5;
+		
+		this.cornerCoords = [];
+		this.directions = [];
+		
+		let x, y, angle, text;
+		
+		x = camera.x;
+		y = camera.y;
+		text = this.add.text(x + inset, y + inset, formatCoord(x, y), this.style);
+		this.cornerCoords.push(text);
+		
+		x = camera.x + camera.width;
+		y = camera.y;
+		text = this.add.text(x - inset, y + inset, formatCoord(x, y), this.style);
+		text.setOrigin(1,0);
+		this.cornerCoords.push(text);
+		
+		x = camera.x + camera.width;
+		y = camera.y + camera.height;
+		text = this.add.text(x - inset, y - inset, formatCoord(x, y), this.style);
+		text.setOrigin(1,1);
+		this.cornerCoords.push(text);
+		
+		x = camera.x;
+		y = camera.y + camera.height;
+		text = this.add.text(x + inset, y - inset, formatCoord(x, y), this.style);
+		text.setOrigin(0,1);
+		this.cornerCoords.push(text);
+		
+		angle = 0 + camera.rotation;
+		x = camera.x + camera.width - inset;
+		y = camera.y + camera.height / 2;
+		text = this.add.text(x, y, formatAngle(angle), this.style);
+		text.setOrigin(1,0.5);
+		this.directions.push(text);
+		
+		angle = Math.PI / 2 + camera.rotation;
+		x = camera.x + camera.width / 2;
+		y = camera.y + camera.height - inset;
+		text = this.add.text(x, y, formatAngle(angle), this.style);
+		text.setOrigin(0.5,1);
+		this.directions.push(text);
+		
+		angle = Math.PI + camera.rotation;
+		x = camera.x + inset;
+		y = camera.y + camera.height / 2;
+		text = this.add.text(x, y, formatAngle(angle), this.style);
+		text.setOrigin(0,0.5);
+		this.directions.push(text);
+		
+		angle = Math.PI * 3 / 2 + camera.rotation;
+		x = camera.x + camera.width / 2;
+		y = camera.y + inset;
+		text = this.add.text(x, y, formatAngle(angle), this.style);
+		text.setOrigin(0.5,0);
+		this.directions.push(text);
 	}
 	
 	prettify(str) {
