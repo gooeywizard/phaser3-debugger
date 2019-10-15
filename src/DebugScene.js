@@ -74,7 +74,7 @@ class DebugScene extends Phaser.Scene {
 		// the scene being debugged
 		this.debugScene = scene;
 		
-		this.game.events.on('prestep', (time, delta) => {
+		this.events.on('prestep', (time, delta) => {
 			let start = new Date().getTime();
 			for(let i = 0; i < 1e7; i++) {
 				if((new Date().getTime() - start) > this.gameDelay) {
@@ -330,12 +330,12 @@ class DebugScene extends Phaser.Scene {
 	}
 	
 	pauseScene() {
-		this.game.scene.pause(this.debugScene.scene.key);
+		this.scene.pause(this.debugScene.scene.key);
 		this.isPaused = true;
 	}
 	
 	resumeScene() {
-		this.game.scene.resume(this.debugScene.scene.key);
+		this.scene.resume(this.debugScene.scene.key);
 		this.isPaused = false;
 	}
 	
