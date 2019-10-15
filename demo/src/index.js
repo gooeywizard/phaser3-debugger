@@ -7,7 +7,9 @@ const debug = new DebugScene({
 	props: ['x','y','angle'],
 	color: '#da4d4d',
 	pauseKey: 'P',
-	pauseOnCollisions: false
+	pauseOnCollisions: false,
+	showCornerCoords: true,
+	showDirectionAngles: true
 });
 
 new Phaser.Game({
